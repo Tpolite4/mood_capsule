@@ -1,0 +1,53 @@
+
+body {
+  margin: 0;
+  padding:0;
+  display: flex;
+  place-items: center;
+  align-items: center;
+  justify-content: center;
+  min-width: 320px;
+  min-height: 100vh;
+  
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+canvas {
+  position: absolute;
+}
+
+#container2 {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  font-size: 30px;
+}
+
+#justtext {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#expression {
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+#abutton, #stop {
+  width: 100px;
+  height: auto;
+}
+
