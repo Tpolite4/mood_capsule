@@ -1,26 +1,40 @@
-
 body {
   margin: 0;
-  padding:0;
+  padding: 0;
   display: flex;
   place-items: center;
   align-items: center;
   justify-content: center;
   min-width: 320px;
   min-height: 100vh;
-  
+
+  background: linear-gradient(135deg, #e6f4ff, #f5fbff);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #1f3b4d;
 }
 
+/* Headline */
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 3rem;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  color: #1b4f72;
+  text-align: center;
 }
 
+/* Main container */
 #container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2.5rem 3rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(8px);
 }
 
 canvas {
@@ -30,24 +44,50 @@ canvas {
 #container2 {
   display: flex;
   justify-content: center;
+  gap: 1.5rem;
   flex-direction: row;
-  font-size: 30px;
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  color: #2c6e8f;
 }
 
-#justtext {
+#justtext,
+#expression {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 1.25rem;
+  margin-top: 0.75rem;
+  color: #2c6e8f;
+  text-align: center;
 }
 
-#expression {
-  font-size: 30px;
-  display: flex;
-  justify-content: center;
+/* Buttons */
+#abutton,
+#stop {
+  width: 120px;
+  padding: 0.6rem 0;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #6ec1ff, #4da9ff);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+
+  box-shadow: 0 10px 20px rgba(77, 169, 255, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-#abutton, #stop {
-  width: 100px;
-  height: auto;
+#abutton:hover,
+#stop:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(77, 169, 255, 0.45);
 }
 
+#abutton:active,
+#stop:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 16px rgba(77, 169, 255, 0.35);
+}

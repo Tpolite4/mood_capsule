@@ -1,4 +1,4 @@
-import quotes from './quotes.js'
+import quotes from './quotes.js';
 // import { useEffect } from 'react';
 /*import {
      loadFaceLandmarkModel,
@@ -273,14 +273,14 @@ avideo.addEventListener('play', () => {
     aFeeling.style.paddingLeft = '10px';
     aFeeling.style.fontSize = '50px';
 
-    let stringFeel = wordFeeling + "Quotes";
+    let stringFeel = wordFeeling + 'Quotes';
     if (quotes[stringFeel]) {
       const quoteArr = quotes[stringFeel]; // Get the array of quotes based on the feeling
       const randomIndex = Math.floor(Math.random() * quoteArr.length); // Pick a random quote
       const selectedQuote = quoteArr[randomIndex]; // Store the selected quote
-    
+
       const quoteElement = document.getElementById('quoteBox'); // Assuming you have an element with id 'quoteBox'
-    
+
       // Check if the quoteElement exists to avoid potential errors
       if (quoteElement) {
         quoteElement.textContent = selectedQuote; // Set the text content of the quote box
@@ -292,7 +292,6 @@ avideo.addEventListener('play', () => {
     } else {
       console.error('No quotes available for the selected feeling.');
     }
-    
 
     //aFeeling.style.paddingBottom = '100px';
 
