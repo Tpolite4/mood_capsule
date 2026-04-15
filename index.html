@@ -15,12 +15,42 @@
 
       <video id="avideo" width="720" height="560" autoplay muted></video>
 
-      <button id="abutton">Click here</button>
-      <button id="stop">Stop Viewing</button>
+      <div id="buttonRow">
+        <button id="abutton">Click here</button>
+        <button id="stop">Stop Viewing</button>
+        <button id="openJournalModal">📖 My Journal</button>
+      </div>
 
       <div id="container2">
         <div id="justtext">I am currently feeling:</div>
         <div id="expression"></div>
+      </div>
+    </div>
+
+    <!-- Journal Dropdown -->
+    <div id="journalDropdown">
+      <p id="journalDropdownTitle">✍️ How are you feeling about this?</p>
+      <p id="journalDetectedInfo"></p>
+      <textarea
+        id="journalNote"
+        placeholder="Write your thoughts..."
+      ></textarea>
+      <div id="journalDropdownButtons">
+        <button id="cancelJournalBtn" class="journal-btn secondary">
+          Cancel
+        </button>
+        <button id="saveJournalBtn" class="journal-btn primary">
+          Save Entry
+        </button>
+      </div>
+    </div>
+
+    <!-- Journal Modal -->
+    <div id="journalModal">
+      <div id="journalModalContent">
+        <button id="closeJournalModal">✕</button>
+        <h2>My Journal</h2>
+        <div id="journalEntryList"></div>
       </div>
     </div>
   </body>
