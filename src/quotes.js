@@ -15,8 +15,8 @@ const quotes = {
     "It's okay to feel this way. Emotions come and go like waves.",
     'I am allowed to rest. Healing takes time.',
     'Even on my hard days, I am worthy of love and compassion.',
-    'This moment is tough, but it won't last forever.',
-    'I've made it through every difficult day so far. I can do this too.',
+    "This moment is tough, but it won't last forever.",
+    "I've made it through every difficult day so far. I can do this too.",
     'Sadness is not weakness — it is proof that I feel deeply.',
     'I give myself permission to grieve and to grow.',
     'I am gentle with myself during difficult times.',
@@ -25,7 +25,7 @@ const quotes = {
   ],
   angryQuotes: [
     'I can feel anger without letting it control me.',
-    'It's okay to be mad — my emotions are valid.',
+    "It's okay to be mad — my emotions are valid.",
     'I choose to respond, not react.',
     'I am allowed to take space to cool down and reflect.',
     'My anger is a signal, not a sentence. I will listen and then release.',
@@ -59,6 +59,6 @@ const quotes = {
     'I am braver than I believe and stronger than I feel.',
     'The unknown holds possibility just as much as it holds risk.',
   ],
-}
+};
 
 export default quotes;
