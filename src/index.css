@@ -7,13 +7,11 @@ body {
   justify-content: center;
   min-width: 320px;
   min-height: 100vh;
-
   background: linear-gradient(135deg, #e6f4ff, #f5fbff);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   color: #1f3b4d;
 }
 
-/* Headline */
 h1 {
   font-size: 3rem;
   line-height: 1.2;
@@ -23,13 +21,11 @@ h1 {
   text-align: center;
 }
 
-/* Main container */
 #container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   background: rgba(255, 255, 255, 0.85);
   padding: 2.5rem 3rem;
   border-radius: 20px;
@@ -62,32 +58,256 @@ canvas {
   text-align: center;
 }
 
-/* Buttons */
+/* Button row */
+#buttonRow {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 #abutton,
-#stop {
-  width: 120px;
+#stop,
+#openJournalModal {
+  width: 140px;
   padding: 0.6rem 0;
   border-radius: 999px;
   border: none;
   cursor: pointer;
-
   background: linear-gradient(135deg, #6ec1ff, #4da9ff);
   color: white;
   font-size: 1rem;
   font-weight: 600;
-
   box-shadow: 0 10px 20px rgba(77, 169, 255, 0.35);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 #abutton:hover,
-#stop:hover {
+#stop:hover,
+#openJournalModal:hover {
   transform: translateY(-2px);
   box-shadow: 0 14px 28px rgba(77, 169, 255, 0.45);
 }
 
 #abutton:active,
-#stop:active {
+#stop:active,
+#openJournalModal:active {
   transform: translateY(0);
   box-shadow: 0 8px 16px rgba(77, 169, 255, 0.35);
+}
+
+/* ── Journal Dropdown ── */
+#journalDropdown {
+  display: none;
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 340px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(110, 193, 255, 0.3);
+  z-index: 100;
+  animation: slideUp 0.3s ease;
+}
+
+#journalDropdown.open {
+  display: block;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#journalDropdownTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1b4f72;
+  margin: 0 0 0.5rem;
+}
+
+#journalDetectedInfo {
+  font-size: 0.85rem;
+  color: #2c6e8f;
+  font-style: italic;
+  background: rgba(110, 193, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+}
+
+#journalNote {
+  width: 100%;
+  height: 100px;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(77, 169, 255, 0.35);
+  background: #f5fbff;
+  color: #1f3b4d;
+  font-size: 0.9rem;
+  font-family: inherit;
+  resize: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+#journalNote:focus {
+  outline: none;
+  border-color: #4da9ff;
+}
+
+#journalDropdownButtons {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.journal-btn {
+  flex: 1;
+  padding: 0.55rem 0;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.journal-btn.primary {
+  background: linear-gradient(135deg, #6ec1ff, #4da9ff);
+  color: white;
+  box-shadow: 0 8px 16px rgba(77, 169, 255, 0.35);
+}
+
+.journal-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(77, 169, 255, 0.45);
+}
+
+.journal-btn.secondary {
+  background: rgba(110, 193, 255, 0.12);
+  color: #2c6e8f;
+}
+
+.journal-btn.secondary:hover {
+  background: rgba(110, 193, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+/* ── Journal Modal ── */
+#journalModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(27, 79, 114, 0.35);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+}
+
+#journalModal.open {
+  display: flex;
+}
+
+#journalModalContent {
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  width: 520px;
+  max-height: 75vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#journalModalContent h2 {
+  font-size: 1.75rem;
+  color: #1b4f72;
+  margin: 0 0 1.25rem;
+}
+
+#closeJournalModal {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  background: rgba(110, 193, 255, 0.12);
+  border: none;
+  color: #2c6e8f;
+  font-size: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+#closeJournalModal:hover {
+  background: rgba(110, 193, 255, 0.28);
+}
+
+/* Journal entries */
+.journal-entry {
+  border-bottom: 1px solid rgba(110, 193, 255, 0.2);
+  padding: 1rem 0;
+}
+
+.journal-entry:last-child {
+  border-bottom: none;
+}
+
+.entry-date {
+  font-size: 0.75rem;
+  color: #7fb3cc;
+  margin: 0 0 0.25rem;
+}
+
+.entry-emotion {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1b4f72;
+  margin: 0 0 0.25rem;
+}
+
+.entry-quote {
+  font-style: italic;
+  color: #4a90a4;
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+
+.entry-note {
+  font-size: 0.9rem;
+  color: #1f3b4d;
+  background: rgba(110, 193, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+  line-height: 1.5;
 }
