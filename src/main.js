@@ -1,29 +1,10 @@
 import quotes from './quotes.js';
+import { startCamera } from './camera/camera.js';
+import { createMoodAnalyzer } from './mood/moodAnalyzer.js';
 
 let abutton = document.getElementById('abutton');
 let avideo = document.getElementById('avideo');
 let astopbutton = document.getElementById('stop');
-
-function startVid() {
-  navigator.mediaDevices
-    .getUserMedia({ video: {} })
-    .then((stream) => {
-      if (avideo.srcObject !== null) {
-        console.log('Please turn off before starting a new stream');
-      } else {
-        avideo.srcObject = stream;
-        avideo.addEventListener('loadedmetadata', () => {
-          avideo.play();
-        });
-
-        astopbutton.addEventListener('click', () => {
-          stream.getTracks().forEach((track) => track.stop());
-          avideo.srcObject = null;
-        });
-      }
-    })
-    .catch(alert);
-}
 
 abutton.addEventListener('click', () => {
   Promise.all([
@@ -31,7 +12,9 @@ abutton.addEventListener('click', () => {
     faceapi.nets.faceLandmark68Net.loadFromUri('/models/weights'),
     faceapi.nets.faceRecognitionNet.loadFromUri('/models/weights'),
     faceapi.nets.faceExpressionNet.loadFromUri('/models/weights'),
-  ]).then(startVid);
+  ]).then(() => {
+    startCamera(avideo, astopbutton);
+  });
 });
 
 avideo.addEventListener('play', () => {
@@ -44,11 +27,7 @@ avideo.addEventListener('play', () => {
   let currentQuote = '';
   let currentFeeling = '';
   let currentEmoji = '';
-  let emotionHistory = [];
-  let moodLocked = false;
-  let detectedMood = '';
-
-  const historyLength = 8;
+  const moodAnalyzer = createMoodAnalyzer(8);
 
   astopbutton.addEventListener('click', () => {
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
@@ -80,36 +59,11 @@ avideo.addEventListener('play', () => {
       }
     }
 
-    if (!moodLocked) {
-      emotionHistory.push(wordFeeling);
+    console.log(obj);
 
-      if (emotionHistory.length > historyLength) {
-        emotionHistory.shift();
-      }
-    }
+    moodAnalyzer.addEmotion(wordFeeling);
 
-    if (!moodLocked && emotionHistory.length === historyLength) {
-      const emotionCounts = {};
-      //loop through our emotion counts array
-      for (const emotion of emotionHistory) {
-        emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
-      }
-
-      let dominantEmotion = '';
-      let highestCount = 0;
-      //loop through our emotion counts object
-      for (const emotion in emotionCounts) {
-        if (emotionCounts[emotion] > highestCount) {
-          highestCount = emotionCounts[emotion];
-          dominantEmotion = emotion;
-        }
-      }
-
-      detectedMood = dominantEmotion;
-      moodLocked = true;
-    }
-
-    switch (moodLocked ? detectedMood : wordFeeling) {
+    switch (moodAnalyzer.isLocked() ? moodAnalyzer.getMood() : wordFeeling) {
       case 'neutral':
         emoji = String.fromCodePoint(0x1f611);
         break;
@@ -138,10 +92,11 @@ avideo.addEventListener('play', () => {
     aFeeling.style.paddingLeft = '10px';
     aFeeling.style.fontSize = '50px';
 
+    if (moodAnalyzer.isLocked() && !currentFeeling) {
+      const detectedMood = moodAnalyzer.getMood();
+      const stringFeel = detectedMood + 'Quotes';
 
-    if (moodLocked && !currentFeeling) {
-    const stringFeel = detectedMood + 'Quotes';
-    if(!quotes[stringFeel]) return;
+      if (!quotes[stringFeel]) return;
 
       const quoteArr = quotes[stringFeel];
       const randomIndex = Math.floor(Math.random() * quoteArr.length);
@@ -150,7 +105,6 @@ avideo.addEventListener('play', () => {
       currentFeeling = detectedMood;
       currentEmoji = emoji;
 
-      // Open the journal dropdown with the new emotion + quote
       openJournalDropdown(currentEmoji, currentFeeling, currentQuote);
     }
 
