@@ -44,6 +44,11 @@ avideo.addEventListener('play', () => {
   let currentQuote = '';
   let currentFeeling = '';
   let currentEmoji = '';
+  let emotionHistory = [];
+  let moodLocked = false;
+  let detectedMood = '';
+
+  const historyLength = 8;
 
   astopbutton.addEventListener('click', () => {
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
@@ -75,7 +80,36 @@ avideo.addEventListener('play', () => {
       }
     }
 
-    switch (wordFeeling) {
+    if (!moodLocked) {
+      emotionHistory.push(wordFeeling);
+
+      if (emotionHistory.length > historyLength) {
+        emotionHistory.shift();
+      }
+    }
+
+    if (!moodLocked && emotionHistory.length === historyLength) {
+      const emotionCounts = {};
+      //loop through our emotion counts array
+      for (const emotion of emotionHistory) {
+        emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
+      }
+
+      let dominantEmotion = '';
+      let highestCount = 0;
+      //loop through our emotion counts object
+      for (const emotion in emotionCounts) {
+        if (emotionCounts[emotion] > highestCount) {
+          highestCount = emotionCounts[emotion];
+          dominantEmotion = emotion;
+        }
+      }
+
+      detectedMood = dominantEmotion;
+      moodLocked = true;
+    }
+
+    switch (moodLocked ? detectedMood : wordFeeling) {
       case 'neutral':
         emoji = String.fromCodePoint(0x1f611);
         break;
@@ -104,13 +138,16 @@ avideo.addEventListener('play', () => {
     aFeeling.style.paddingLeft = '10px';
     aFeeling.style.fontSize = '50px';
 
-    let stringFeel = wordFeeling + 'Quotes';
 
-    if (quotes[stringFeel] && wordFeeling !== currentFeeling) {
+    if (moodLocked && !currentFeeling) {
+    const stringFeel = detectedMood + 'Quotes';
+    if(!quotes[stringFeel]) return;
+
       const quoteArr = quotes[stringFeel];
       const randomIndex = Math.floor(Math.random() * quoteArr.length);
+
       currentQuote = quoteArr[randomIndex];
-      currentFeeling = wordFeeling;
+      currentFeeling = detectedMood;
       currentEmoji = emoji;
 
       // Open the journal dropdown with the new emotion + quote
@@ -180,8 +217,6 @@ document
 document.getElementById('cancelJournalBtn').addEventListener('click', () => {
   document.getElementById('journalDropdown').classList.remove('open');
 });
-
-// --- Journal Modal ---
 
 document
   .getElementById('openJournalModal')
