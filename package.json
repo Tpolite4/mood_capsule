@@ -1,8 +1,8 @@
 {
-  "name": "faceid",
+  "name": "mood_capsule",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A mood-aware journaling application that uses facial expression analysis to provide personalized affirmations and guided reflection.",
+  "main": "server.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
@@ -10,16 +10,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FTechHackathonMarch22/FaceID.git"
+    "url": "git+https://github.com/Tpolite4/mood_capsule.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "mood",
+    "journal",
+    "facial-expression-analysis",
+    "wellness",
+    "vite"
+  ],
+  "author": "Tyler Polite",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/FTechHackathonMarch22/FaceID/issues"
+    "url": "https://github.com/Tpolite4/mood_capsule/issues"
   },
-  "homepage": "https://github.com/FTechHackathonMarch22/FaceID#readme",
+  "homepage": "https://github.com/Tpolite4/mood_capsule#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

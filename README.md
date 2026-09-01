@@ -1,4 +1,3 @@
-# FaceID
 # Mood Capsule
 *A mood-aware journaling application powered by facial analysis*
 
