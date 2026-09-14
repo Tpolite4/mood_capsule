@@ -1,38 +1,44 @@
 export function createMoodAnalyzer(historyLength = 8) {
-  let emotionHistory = [];
+  let expressionHistory = [];
   let moodLocked = false;
   let detectedMood = '';
 
-  function addEmotion(emotion) {
+  function addExpressions(expressions) {
     if (moodLocked) {
       return;
     }
 
-    emotionHistory.push(emotion);
+    expressionHistory.push(expressions);
+    console.log('Expression history:', expressionHistory);
 
-    if (emotionHistory.length > historyLength) {
-      emotionHistory.shift();
+    if (expressionHistory.length > historyLength) {
+      expressionHistory.shift();
     }
 
-    if (emotionHistory.length === historyLength) {
+    if (expressionHistory.length === historyLength) {
       detectedMood = getDominantEmotion();
       moodLocked = true;
     }
   }
-
+  //after reading the 10 expressions; loop through to find the confidence scores per key
+  //check if it is undefined and then total them up
   function getDominantEmotion() {
-    const emotionCounts = {};
+    const emotionTotals = {};
 
-    for (const emotion of emotionHistory) {
-      emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
+    for (const expressions of expressionHistory) {
+      for (const keys of Object.keys(expressions)) {
+        emotionTotals[keys] = (emotionTotals[keys] || 0) + expressions[keys];
+      }
     }
+    console.log('Emotion totals:', emotionTotals);
 
     let dominantEmotion = '';
-    let highestCount = 0;
-
-    for (const emotion in emotionCounts) {
-      if (emotionCounts[emotion] > highestCount) {
-        highestCount = emotionCounts[emotion];
+    //initialize confidence score to 0
+    let highestScore = 0;
+    //loop through our totals and find the highest score among the emotions
+    for (const emotion in emotionTotals) {
+      if (emotionTotals[emotion] > highestScore) {
+        highestScore = emotionTotals[emotion];
         dominantEmotion = emotion;
       }
     }
@@ -41,7 +47,7 @@ export function createMoodAnalyzer(historyLength = 8) {
   }
 
   return {
-    addEmotion,
+    addExpressions,
     getMood: () => detectedMood,
     isLocked: () => moodLocked,
   };

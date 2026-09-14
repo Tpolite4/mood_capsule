@@ -1,10 +1,30 @@
 import quotes from './quotes.js';
 import { startCamera } from './camera/camera.js';
 import { createMoodAnalyzer } from './mood/moodAnalyzer.js';
+import { initializeJournal } from './journal/journal.js';
 
 let abutton = document.getElementById('abutton');
 let avideo = document.getElementById('avideo');
 let astopbutton = document.getElementById('stop');
+let detectionInterval;
+const journal = initializeJournal();
+//journal.getJournalEntries();
+
+const openJournalModal = document.getElementById('openJournalModal');
+const closeJournalModal = document.getElementById('closeJournalModal');
+const journalModal = document.getElementById('journalModal');
+
+openJournalModal.addEventListener('click', async () => {
+  const entries = await journal.getJournalEntries();
+
+  console.log('Entries for journal modal:', entries);
+
+  journalModal.classList.add('open');
+});
+
+closeJournalModal.addEventListener('click', () => {
+  journalModal.classList.remove('open');
+});
 
 abutton.addEventListener('click', () => {
   Promise.all([
@@ -30,10 +50,12 @@ avideo.addEventListener('play', () => {
   const moodAnalyzer = createMoodAnalyzer(8);
 
   astopbutton.addEventListener('click', () => {
+    clearInterval(detectionInterval);
+
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
   });
 
-  setInterval(async () => {
+  detectionInterval = setInterval(async () => {
     const detect = await faceapi
       .detectAllFaces(avideo, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
@@ -61,7 +83,7 @@ avideo.addEventListener('play', () => {
 
     console.log(obj);
 
-    moodAnalyzer.addEmotion(wordFeeling);
+    moodAnalyzer.addExpressions(obj);
 
     switch (moodAnalyzer.isLocked() ? moodAnalyzer.getMood() : wordFeeling) {
       case 'neutral':
@@ -105,7 +127,7 @@ avideo.addEventListener('play', () => {
       currentFeeling = detectedMood;
       currentEmoji = emoji;
 
-      openJournalDropdown(currentEmoji, currentFeeling, currentQuote);
+      journal.openJournalDropdown(currentEmoji, currentFeeling, currentQuote);
     }
 
     const quoteElement = document.getElementById('quoteBox');
@@ -115,97 +137,4 @@ avideo.addEventListener('play', () => {
       quoteElement.style.padding = '10px';
     }
   }, 1000);
-});
-
-// --- Journal Dropdown ---
-
-function openJournalDropdown(emoji, feeling, quote) {
-  const dropdown = document.getElementById('journalDropdown');
-  const detectedInfo = document.getElementById('journalDetectedInfo');
-
-  detectedInfo.textContent = `${emoji} ${feeling} — "${quote}"`;
-  document.getElementById('journalNote').value = '';
-  dropdown.classList.add('open');
-}
-
-document
-  .getElementById('saveJournalBtn')
-  .addEventListener('click', async () => {
-    const note = document.getElementById('journalNote').value.trim();
-    const detectedInfo = document.getElementById(
-      'journalDetectedInfo'
-    ).textContent;
-
-    // Parse emoji, feeling, and quote back out of detectedInfo
-    const [emojiFeeling, ...quoteParts] = detectedInfo.split(' — ');
-    const quote = quoteParts.join(' — ').replace(/^"|"$/g, '');
-    const [emoji, ...feelingParts] = emojiFeeling.split(' ');
-    const feeling = feelingParts.join(' ');
-
-    const entry = {
-      emoji,
-      feeling,
-      quote,
-      note,
-      date: new Date().toISOString(),
-    };
-
-    try {
-      const res = await fetch('/api/journal', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(entry),
-      });
-
-      if (res.ok) {
-        document.getElementById('journalDropdown').classList.remove('open');
-        console.log('Journal entry saved.');
-      } else {
-        console.error('Failed to save entry.');
-      }
-    } catch (err) {
-      console.error('Error saving journal entry:', err);
-    }
-  });
-
-document.getElementById('cancelJournalBtn').addEventListener('click', () => {
-  document.getElementById('journalDropdown').classList.remove('open');
-});
-
-document
-  .getElementById('openJournalModal')
-  .addEventListener('click', async () => {
-    try {
-      const res = await fetch('/api/journal');
-      const entries = await res.json();
-      const list = document.getElementById('journalEntryList');
-      list.innerHTML = '';
-
-      if (entries.length === 0) {
-        list.innerHTML = '<p>No entries yet.</p>';
-      } else {
-        entries
-          .slice()
-          .reverse()
-          .forEach((entry) => {
-            const div = document.createElement('div');
-            div.classList.add('journal-entry');
-            div.innerHTML = `
-            <p class="entry-date">${new Date(entry.date).toLocaleString()}</p>
-            <p class="entry-emotion">${entry.emoji} ${entry.feeling}</p>
-            <p class="entry-quote">${entry.quote}</p>
-            ${entry.note ? `<p class="entry-note">${entry.note}</p>` : ''}
-          `;
-            list.appendChild(div);
-          });
-      }
-
-      document.getElementById('journalModal').classList.add('open');
-    } catch (err) {
-      console.error('Error fetching journal entries:', err);
-    }
-  });
-
-document.getElementById('closeJournalModal').addEventListener('click', () => {
-  document.getElementById('journalModal').classList.remove('open');
 });
